@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>    
+    <div id="grid"></div>
+    <script type="module">
+        const grid = document.getElementById('grid');
+        const gameGrid = new Grid();
+        gameGrid.Initialize();
+
+        for (let i = 0; i < 10; i++) {
+            const row = document.createElement("div");
+            row.classList.add("row");
+            for (let j = 0; j < 10; j++) {
+                const tile = document.createElement("div");
+                tile.classList.add("tile");
+                
+               
+                tile.addEventListener("click", function() {
+                    const gameTile = gameGrid.tiles[i][j];
+                    
+                    //reveal callback
+                    const revealCallback = (revealedTile) => {
+                        const tileElement = grid.children[revealedTile.row]
+                            .children[revealedTile.col];
+                        if (revealedTile.isBomb) {
+                            tileElement.classList.add("bomb");
+                            tileElement.textContent = "💣";
+                        } else {
+                            tileElement.classList.add("revealed");
+                            tileElement.textContent = revealedTile.value || "";
+                        }
+                    };
+
+                    Grid.RevealTile(gameTile, gameGrid, revealCallback);
+                });
+                
+                row.appendChild(tile);
+            }
+            grid.appendChild(row);
+        }
+    </script>
+</body>
+</html>
+<script src="test.js"></script>
+<style>
+    #grid {
+        display: flex;
+        flex-direction: column;
+        max-width: 800px;
+        margin: 0 auto;
+        gap: 2px;
+        padding: 2px;
+        background-color: #ccc;
+    }
+    .row {
+        display: flex;
+        gap: 2px;
+    }
+    .tile {
+        aspect-ratio: 1;
+        flex: 1;
+        background-color: rgb(255, 255, 255);
+        border: 1px solid #999;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-size: 1.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .tile:hover {
+        background-color: #eee;
+    }
+    .bomb {
+        background-color: #ff4444;
+    }
+    .revealed {
+        background-color: #f0f0f0;
+        cursor: default;
+    }
+</style>
